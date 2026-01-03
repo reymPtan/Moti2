@@ -1,32 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>MOTI | Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/glass.css" />
-</head>
-<body>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <div class="glass">
-  <h2>Welcome to MOTI</h2>
-  <button onclick="logout()">Logout</button>
+  <h2 id="motivation"></h2>
 
-  <hr />
-
-  <h3>📝 Notes</h3>
-  <input id="noteInput" placeholder="Write a note..." />
-  <button onclick="addNote()">Add Note</button>
+  <h3>Notes</h3>
+  <input id="newNote"><button id="addNote">Add</button>
   <ul id="notesList"></ul>
 
-  <hr />
+  <h3>Habits</h3>
+  <input id="newHabit"><button id="addHabit">Add</button>
+  <ul id="habitList"></ul>
 
-  <h3>🔥 Habits</h3>
-  <input id="habitInput" placeholder="New habit..." />
-  <button onclick="addHabit()">Add Habit</button>
-  <ul id="habitsList"></ul>
+  <button onclick="localStorage.clear();location.href='index.html'">
+    Logout
+  </button>
 </div>
-
 <script src="js/dashboard.js"></script>
-</body>
-</html>
