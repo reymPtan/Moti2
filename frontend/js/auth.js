@@ -1,33 +1,56 @@
-const API = "https://moti2.onrender.com";
+const API = "https://moti2.onrender.com/api";
 
-document.getElementById("loginForm")?.addEventListener("submit", async e=>{
-  e.preventDefault();
-  const username = loginUser.value;
-  const password = loginPass.value;
+/* ===== LOGIN ===== */
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-  const res = await fetch(`${API}/api/login`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({username,password})
+  fetch(`${API}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.userId) {
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("username", data.username);
+      location.href = "dashboard.html";
+    } else {
+      alert("Login failed");
+    }
   });
+}
 
-  const data = await res.json();
-  if(data.userId){
-    localStorage.setItem("userId",data.userId);
-    location.href="dashboard.html";
-  } else alert("Login failed");
-});
+/* ===== REGISTER ===== */
+function register() {
+  const username = document.getElementById("regUsername").value;
+  const password = document.getElementById("regPassword").value;
 
-document.getElementById("registerForm")?.addEventListener("submit", async e=>{
-  e.preventDefault();
-  const username = regUser.value;
-  const password = regPass.value;
-
-  await fetch(`${API}/api/register`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({username,password})
+  fetch(`${API}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Registered successfully");
+      location.href = "index.html";
+    } else {
+      alert(data.error || "Register failed");
+    }
   });
+}
 
-  location.href="index.html";
-});
+/* ===== SESSION GUARD ===== */
+function requireLogin() {
+  if (!localStorage.getItem("userId")) {
+    location.href = "index.html";
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  location.href = "index.html";
+}
