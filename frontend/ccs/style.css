@@ -36,3 +36,40 @@ button{
   align-items:center;
 }
 a{text-decoration:none;color:#2563eb}
+
+.dashboard {
+  width: 90%;
+  max-width: 900px;
+  display: grid;
+  gap: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat {
+  text-align: center;
+  font-size: 18px;
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.section li {
+  background: rgba(255,255,255,0.4);
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 8px;
+}
+
