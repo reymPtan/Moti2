@@ -1,74 +1,48 @@
-const API = "https://moti2.onrender.com"; // palitan kung iba URL mo
+const API = "https://moti2.onrender.com";
 const userId = localStorage.getItem("userId");
+if(!userId) location.href="index.html";
 
-if (!userId) {
-  location.href = "index.html";
+/* NOTES */
+async function loadNotes(){
+  const res = await fetch(`${API}/api/notes/${userId}`);
+  const notes = await res.json();
+  notesList.innerHTML = notes.map(n=>`<li>${n.content}</li>`).join("");
 }
 
-/* ===== LOGOUT ===== */
-function logout() {
-  localStorage.clear();
-  location.href = "index.html";
-}
-
-/* ===== NOTES ===== */
-function addNote() {
-  const content = document.getElementById("noteInput").value;
-  if (!content) return;
-
-  fetch(`${API}/api/notes`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, content })
-  }).then(() => {
-    document.getElementById("noteInput").value = "";
-    loadNotes();
+addNote.onclick = async ()=>{
+  await fetch(`${API}/api/notes`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({userId,content:newNote.value})
   });
+  newNote.value="";
+  loadNotes();
+};
+
+/* HABITS */
+async function loadHabits(){
+  const res = await fetch(`${API}/api/habits/${userId}`);
+  const habits = await res.json();
+  habitList.innerHTML = habits.map(h=>`<li>${h.name}</li>`).join("");
 }
 
-function loadNotes() {
-  fetch(`${API}/api/notes/${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("notesList");
-      list.innerHTML = "";
-      data.forEach(note => {
-        const li = document.createElement("li");
-        li.textContent = note.content;
-        list.appendChild(li);
-      });
-    });
-}
-
-/* ===== HABITS ===== */
-function addHabit() {
-  const title = document.getElementById("habitInput").value;
-  if (!title) return;
-
-  fetch(`${API}/api/habits`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, title })
-  }).then(() => {
-    document.getElementById("habitInput").value = "";
-    loadHabits();
+addHabit.onclick = async ()=>{
+  await fetch(`${API}/api/habits`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({userId,name:newHabit.value})
   });
+  newHabit.value="";
+  loadHabits();
+};
+
+/* MOTIVATION */
+async function loadMotivation(){
+  const res = await fetch(`${API}/api/motivation/${userId}`);
+  const data = await res.json();
+  motivation.innerText = data.text;
 }
 
-function loadHabits() {
-  fetch(`${API}/api/habits/${userId}`)
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("habitsList");
-      list.innerHTML = "";
-      data.forEach(habit => {
-        const li = document.createElement("li");
-        li.textContent = habit.title;
-        list.appendChild(li);
-      });
-    });
-}
-
-/* INIT */
 loadNotes();
 loadHabits();
+loadMotivation();
