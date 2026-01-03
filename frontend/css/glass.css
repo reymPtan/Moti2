@@ -1,0 +1,167 @@
+
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+}
+
+/* =========================
+   BACKGROUND
+========================= */
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background-attachment: fixed;
+  color: #fff;
+}
+
+/* =========================
+   TOP BAR (LOGO AREA)
+========================= */
+.top-bar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.logo {
+  height: 60px;
+}
+
+/* =========================
+   CENTER WRAPPER
+========================= */
+.center-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   GLASS CARD
+========================= */
+.glass-card {
+  width: 90%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+
+.glass-card h1,
+.glass-card h2 {
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 24px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+.glass-card input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.glass-card button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  border: none;
+  background: #7CFFB2;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.glass-card button:hover {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* =========================
+   LINKS
+========================= */
+.link {
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.link a {
+  color: #7CFFB2;
+  text-decoration: none;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.glass-box {
+  padding: 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 600px) {
+  .glass-card {
+    padding: 24px;
+  }
+
+  .logo {
+    height: 48px;
+  }
+}
