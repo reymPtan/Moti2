@@ -6,23 +6,47 @@
 <body class="page-dashboard">
 
 <script src="js/auth.js"></script>
-<script>requireLogin();</script>
+<script>requireLogin()</script>
 
 <div class="page-wrapper">
 <img src="images/logo.png" class="logo-big">
 
 <div class="glass-card">
-<h2>Dashboard</h2>
 
+<h2 id="welcome"></h2>
+
+<!-- NOTES -->
 <h3>📓 Notes</h3>
-<input id="noteInput" placeholder="Write a note">
+<input id="noteInput" placeholder="New note">
 <button onclick="addNote()">Add</button>
 <ul id="notesList"></ul>
 
+<!-- HABITS -->
+<h3>🔥 Habits</h3>
+<input id="habitInput" placeholder="New habit">
+<button onclick="addHabit()">Add</button>
+<ul id="habitsList"></ul>
+
+<!-- REMINDERS -->
+<h3>⏰ Reminders</h3>
+<input id="reminderText" placeholder="Reminder">
+<input type="datetime-local" id="reminderTime">
+<button onclick="addReminder()">Add</button>
+<ul id="remindersList"></ul>
+
+<!-- ANALYTICS -->
+<h3>📊 Analytics</h3>
+<p id="stats"></p>
+
 <button onclick="logout()">Logout</button>
+
 </div>
 </div>
 
 <script src="js/dashboard.js"></script>
+<script>
+welcome.innerText = "Welcome, " + localStorage.getItem("username");
+</script>
+
 </body>
 </html>
