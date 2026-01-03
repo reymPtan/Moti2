@@ -1,46 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="css/moti-glass-theme.css">
-<title>MOTI | Dashboard</title>
+  <meta charset="UTF-8">
+
+  <!-- ✅ RESPONSIVE (IMPORTANT) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>MOTI | Dashboard</title>
+
+  <!-- GLASS THEME -->
+  <link rel="stylesheet" href="css/moti-glass-theme.css">
+
+  <!-- CHART.JS FOR ANALYTICS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="page-dashboard">
 
+<!-- 🔐 SESSION GUARD -->
 <script src="js/auth.js"></script>
-<script>requireLogin();</script>
+<script>
+  requireLogin();
+</script>
 
 <div class="page-wrapper">
-  <img src="images/logo.png" class="logo-big">
 
+  <!-- LOGO -->
+  <img src="images/logo.png" class="logo-big" alt="MOTI Logo">
+
+  <!-- GLASS CONTAINER -->
   <div class="glass-card">
-    <p id="motivation"></p>
 
+    <!-- 🌅 MOTIVATION -->
+    <p id="motivation" class="motivation-text"></p>
+
+    <!-- ================= NOTES ================= -->
     <h3>📓 Notes</h3>
-    <input id="noteInput">
-    <button onclick="addNote()">Add</button>
+
+    <!-- SEARCH -->
+    <input
+      type="text"
+      placeholder="Search notes..."
+      onkeyup="searchNotes(this.value)"
+    >
+
+    <!-- FOLDER SELECT -->
+    <select id="folderSelect">
+      <option value="">No Folder</option>
+    </select>
+
+    <!-- ADD NOTE -->
+    <input
+      type="text"
+      id="noteInput"
+      placeholder="Write a note..."
+    >
+    <button onclick="addNote()">Add Note</button>
+
+    <!-- NOTES LIST -->
     <ul id="notesList"></ul>
 
+    <hr>
+
+    <!-- ================= FOLDERS ================= -->
+    <h3>📁 Folders</h3>
+
+    <input
+      type="text"
+      id="folderName"
+      placeholder="Folder name"
+    >
+
+    <input
+      type="color"
+      id="folderColor"
+      value="#60a5fa"
+    >
+
+    <button onclick="addFolder()">Add Folder</button>
+
+    <ul id="folderList"></ul>
+
+    <hr>
+
+    <!-- ================= HABITS ================= -->
     <h3>🔥 Habits</h3>
-    <input id="habitInput">
-    <button onclick="addHabit()">Add</button>
+
+    <input
+      type="text"
+      id="habitInput"
+      placeholder="New habit"
+    >
+    <button onclick="addHabit()">Add Habit</button>
+
     <ul id="habitsList"></ul>
 
+    <hr>
+
+    <!-- ================= REMINDERS ================= -->
     <h3>⏰ Reminders</h3>
-    <input id="reminderText">
-    <input type="datetime-local" id="reminderTime">
-    <button onclick="addReminder()">Add</button>
+
+    <input
+      type="text"
+      id="reminderText"
+      placeholder="Reminder text"
+    >
+
+    <input
+      type="datetime-local"
+      id="reminderTime"
+    >
+
+    <button onclick="addReminder()">Add Reminder</button>
+
     <ul id="remindersList"></ul>
 
+    <hr>
+
+    <!-- ================= CALENDAR ================= -->
+    <h3>📅 Calendar</h3>
+
+    <div id="calendar" class="calendar-grid">
+      <!-- Calendar cells rendered by JS -->
+    </div>
+
+    <hr>
+
+    <!-- ================= ANALYTICS ================= -->
     <h3>📊 Analytics</h3>
+
     <p id="stats"></p>
 
+    <canvas id="statsChart" height="200"></canvas>
+
+    <hr>
+
+    <!-- LOGOUT -->
     <button onclick="logout()">Logout</button>
+
   </div>
 </div>
 
+<!-- DASHBOARD LOGIC -->
 <script src="js/dashboard.js"></script>
+
 </body>
 </html>
