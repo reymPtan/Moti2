@@ -1,71 +1,82 @@
 const API = "https://moti2.onrender.com/api";
 const uid = localStorage.getItem("userId");
 
-/* NOTES */
-function addNote(){
-  fetch(API+"/notes",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({userId:uid,content:noteInput.value})})
-    .then(()=>{noteInput.value="";loadNotes();});
+/* ===== NOTES ===== */
+function addNote() {
+  fetch(API+"/notes", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ userId:uid, content:noteInput.value })
+  }).then(()=>{ noteInput.value=""; loadNotes(); });
 }
-function loadNotes(){
+
+function loadNotes() {
   fetch(API+"/notes/"+uid).then(r=>r.json()).then(d=>{
     notesList.innerHTML="";
     d.forEach(n=>{
-      notesList.innerHTML+=`<li>${n.content}
-      <button onclick="deleteNote(${n.id})">❌</button></li>`;
+      notesList.innerHTML += `<li>${n.content}</li>`;
     });
   });
 }
-function deleteNote(id){
-  fetch(API+"/notes/"+id,{method:"DELETE"}).then(loadNotes);
+
+/* ===== HABITS ===== */
+function addHabit() {
+  fetch(API+"/habits", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ userId:uid, name:habitInput.value })
+  }).then(()=>{ habitInput.value=""; loadHabits(); loadStats(); });
 }
 
-/* HABITS */
-function addHabit(){
-  fetch(API+"/habits",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({userId:uid,name:habitInput.value})})
-    .then(()=>{habitInput.value="";loadHabits();});
-}
-function loadHabits(){
+function loadHabits() {
   fetch(API+"/habits/"+uid).then(r=>r.json()).then(d=>{
     habitsList.innerHTML="";
     d.forEach(h=>{
-      habitsList.innerHTML+=`<li>
-      <input type="checkbox" ${h.done?"checked":""}
-      onclick="toggleHabit(${h.id})"> ${h.name}</li>`;
+      habitsList.innerHTML += `
+      <li>
+        <input type="checkbox" ${h.done?"checked":""}
+        onclick="toggleHabit(${h.id})"> ${h.name}
+      </li>`;
     });
   });
 }
-function toggleHabit(id){
-  fetch(API+"/habits/toggle/"+id,{method:"POST"}).then(loadHabits);
+
+function toggleHabit(id) {
+  fetch(API+"/habits/toggle/"+id,{method:"POST"})
+    .then(()=>{ loadHabits(); loadStats(); });
 }
 
-/* REMINDERS */
-function addReminder(){
-  fetch(API+"/reminders",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({userId:uid,text:reminderText.value,time:reminderTime.value})})
-    .then(()=>{reminderText.value="";loadReminders();});
+/* ===== REMINDERS ===== */
+function addReminder() {
+  fetch(API+"/reminders", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      userId:uid,
+      text:reminderText.value,
+      time:reminderTime.value
+    })
+  }).then(()=>{ reminderText.value=""; loadReminders(); loadStats(); });
 }
-function loadReminders(){
+
+function loadReminders() {
   fetch(API+"/reminders/"+uid).then(r=>r.json()).then(d=>{
     remindersList.innerHTML="";
     d.forEach(r=>{
-      remindersList.innerHTML+=`<li>${r.text} @ ${r.remind_at}</li>`;
+      remindersList.innerHTML += `<li>${r.text} – ${r.remind_at}</li>`;
     });
   });
 }
 
-/* ANALYTICS */
-function loadStats(){
+/* ===== ANALYTICS ===== */
+function loadStats() {
   fetch(API+"/stats/"+uid).then(r=>r.json()).then(s=>{
     stats.innerText =
-      "Notes: "+s.notes+
-      " | Habits: "+s.habits+
-      " | Reminders: "+s.reminders;
+      `Notes: ${s.notes} | Habits: ${s.habits} | Reminders: ${s.reminders}`;
   });
 }
 
-/* INIT */
+/* ===== INIT ===== */
 loadNotes();
 loadHabits();
 loadReminders();
