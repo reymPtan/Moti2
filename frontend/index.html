@@ -1,20 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>MOTI | Login</title>
-<link rel="stylesheet" href="css/moti-glass-theme.css">
+  <meta charset="UTF-8">
+  <title>MOTI | Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/moti-glass-theme.css">
 </head>
+
 <body class="page-login">
 <div class="page-wrapper">
-<img src="images/logo.png" class="logo-big">
-<div class="glass-card">
-<h2>Login</h2>
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<div class="link"><a href="register.html">Register</a></div>
+
+  <!-- LOGO -->
+  <img src="images/logo.png" class="logo-big">
+
+  <!-- GLASS CARD -->
+  <div class="glass-card">
+    <h2>Login</h2>
+
+    <input
+      id="username"
+      type="text"
+      placeholder="Username"
+      autocomplete="username"
+      required
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+      required
+    >
+
+    <button type="button" onclick="login()">Login</button>
+
+    <div class="link">
+      <a href="register.html">Create account</a>
+    </div>
+  </div>
+
 </div>
-</div>
+
+<!-- REAL AUTH SCRIPT -->
 <script src="js/auth.js"></script>
 </body>
 </html>
