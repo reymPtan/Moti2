@@ -1,50 +1,33 @@
-const API = "https://moti2.onrender.com/api";
+const API = "https://moti2.onrender.com";
 
-/* REGISTER */
-function register() {
-  fetch(API + "/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: regUsername.value,
-      password: regPassword.value
-    })
-  })
-    .then(r => r.json())
-    .then(d => {
-      if (d.error) alert(d.error);
-      else location.href = "index.html";
-    });
-}
+document.getElementById("loginForm")?.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const username = loginUser.value;
+  const password = loginPass.value;
 
-/* LOGIN */
-function login() {
-  fetch(API + "/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: username.value,
-      password: password.value
-    })
-  })
-    .then(r => r.json())
-    .then(d => {
-      if (d.error) alert(d.error);
-      else {
-        localStorage.setItem("userId", d.userId);
-        localStorage.setItem("username", d.username);
-        location.href = "dashboard.html";
-      }
-    });
-}
+  const res = await fetch(`${API}/api/login`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username,password})
+  });
 
-/* SESSION GUARD */
-function requireLogin() {
-  if (!localStorage.getItem("userId")) location.href = "index.html";
-}
+  const data = await res.json();
+  if(data.userId){
+    localStorage.setItem("userId",data.userId);
+    location.href="dashboard.html";
+  } else alert("Login failed");
+});
 
-/* LOGOUT */
-function logout() {
-  localStorage.clear();
-  location.href = "index.html";
-}
+document.getElementById("registerForm")?.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const username = regUser.value;
+  const password = regPass.value;
+
+  await fetch(`${API}/api/register`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username,password})
+  });
+
+  location.href="index.html";
+});
