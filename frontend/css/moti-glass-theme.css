@@ -116,10 +116,9 @@ button {
   border: 1px solid rgba(255,255,255,0.3);
 }
 .logo-small {
-  width: 6rem;      /* 6x6 size */
-  height: 6rem;
-  display: block;
-  margin: 0 auto 16px auto; /* center horizontally */
+width: min(120px, 30vw);
+  height: auto;
+  margin-bottom: 20px;   /* center horizontally */
 }
 
 
