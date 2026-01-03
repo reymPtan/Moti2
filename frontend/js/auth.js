@@ -1,5 +1,5 @@
+const API_URL = "https://moti2.onrender.com";
 
-const API="http://localhost:10000";
 
 function login(){
   fetch(API+"/api/login",{
