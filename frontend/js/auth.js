@@ -1,71 +1,80 @@
-const API_URL = "https://moti2.onrender.com";
+const API_URL = "https://moti2.onrender.com/api"; 
+// ⚠️ SIGURADUHIN TAMA ANG URL NG BACKEND MO
 
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================
+   REGISTER
+========================= */
+const registerForm = document.getElementById("registerForm");
 
-  /* ======================
-     REGISTER
-  ====================== */
-  const registerForm = document.getElementById("registerForm");
-  if (registerForm) {
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+if (registerForm) {
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      const username = document.getElementById("regUsername").value.trim();
-      const password = document.getElementById("regPassword").value.trim();
+    const username = document.getElementById("regUsername").value;
+    const password = document.getElementById("regPassword").value;
 
-      try {
-        const res = await fetch(`${API_URL}/api/register`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ username, password })
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw data;
-
-        alert("✅ Registered successfully!");
-        window.location.href = "login.html";
-
-      } catch (err) {
-        alert("❌ " + (err.error || "Registration failed"));
-      }
+    const res = await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
     });
-  }
 
-  /* ======================
-     LOGIN
-  ====================== */
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const data = await res.json();
 
-      const username = document.getElementById("loginUsername").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
+    if (res.ok) {
+      alert("Registered successfully! Please login.");
+      window.location.href = "index.html"; // ✅ LOGIN PAGE
+    } else {
+      alert(data.error || "Registration failed");
+    }
+  });
+}
 
-      try {
-        const res = await fetch(`${API_URL}/api/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ username, password })
-        });
+/* =========================
+   LOGIN
+========================= */
+const loginForm = document.getElementById("loginForm");
 
-        const data = await res.json();
-        if (!res.ok) throw data;
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        // save session
-        localStorage.setItem("motiUser", JSON.stringify(data));
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
-        window.location.href = "dashboard.html";
-
-      } catch (err) {
-        alert("❌ " + (err.error || "Login failed"));
-      }
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
     });
-  }
 
-});
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("username", data.username);
+
+      window.location.href = "dashboard.html"; // ✅ DASHBOARD
+    } else {
+      alert(data.error || "Login failed");
+    }
+  });
+}
+
+/* =========================
+   SESSION GUARD
+========================= */
+function requireLogin() {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    window.location.href = "index.html";
+  }
+}
+
+/* =========================
+   LOGOUT
+========================= */
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
