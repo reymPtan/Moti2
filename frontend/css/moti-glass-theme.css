@@ -1,119 +1,124 @@
-
-/* ===== MOTI GLOBAL GLASS THEME ===== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-
-:root{
-  --glass-bg: rgba(255,255,255,0.25);
-  --glass-border: rgba(255,255,255,0.35);
-  --text-main: #1f2937;
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
 }
 
-/* ===== PAGE BACKGROUNDS (DIFFERENT CLOUD SHADES) ===== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== BACKGROUND PER PAGE ===== */
 body.page-login {
-  background: linear-gradient(135deg,#e0f2fe,#fef9c3);
+  background: linear-gradient(135deg, #e0f2fe, #fef9c3);
 }
 body.page-register {
-  background: linear-gradient(135deg,#fae8ff,#e0e7ff);
+  background: linear-gradient(135deg, #fae8ff, #e0e7ff);
 }
 body.page-dashboard {
-  background: linear-gradient(135deg,#dcfce7,#cffafe);
+  background: linear-gradient(135deg, #dcfce7, #cffafe);
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:'Inter',sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:var(--text-main);
+/* ===== PAGE WRAPPER ===== */
+.page-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* ===== CENTER LAYOUT ===== */
-.page-wrapper{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:20px;
-}
-
-/* ===== LOGO (CENTER, BIG) ===== */
-.logo-big{
-  width:6rem;
-  height:6rem;
-  object-fit:contain;
+/* ===== LOGO ===== */
+.logo-big {
+  width: min(120px, 30vw);
+  height: auto;
+  margin-bottom: 20px;
 }
 
 /* ===== GLASS CARD ===== */
-.glass-card{
-  width:90%;
-  max-width:420px;
-  padding:30px;
-  border-radius:24px;
-  background:var(--glass-bg);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  border:1px solid var(--glass-border);
-  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+.glass-card {
+  width: 100%;
+  max-width: 420px;
+  padding: clamp(20px, 5vw, 32px);
+  border-radius: 24px;
+
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 
-/* ===== FORM ELEMENTS ===== */
-.glass-card h2{
-  margin:0 0 15px;
-  text-align:center;
+/* ===== TEXT ===== */
+h2, h3 {
+  text-align: center;
+  margin-top: 0;
 }
 
-input{
-  width:100%;
-  padding:14px;
-  margin-bottom:12px;
-  border-radius:14px;
-  border:none;
-  outline:none;
-  background:rgba(255,255,255,0.6);
+p {
+  font-size: clamp(14px, 3vw, 16px);
 }
 
-button{
-  width:100%;
-  padding:14px;
-  border-radius:16px;
-  border:none;
-  background:#111827;
-  color:white;
-  font-weight:600;
-  cursor:pointer;
+/* ===== INPUTS ===== */
+input {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px);
+  margin-bottom: 12px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  font-size: clamp(14px, 3vw, 16px);
 }
 
-button:hover{
-  opacity:0.9;
+/* ===== BUTTON ===== */
+button {
+  width: 100%;
+  padding: clamp(12px, 3vw, 14px);
+  border-radius: 16px;
+  border: none;
+  font-weight: 600;
+  font-size: clamp(14px, 3vw, 16px);
+  background: #111827;
+  color: white;
 }
 
-.link{
-  margin-top:14px;
-  text-align:center;
+/* ===== LINKS ===== */
+.link {
+  text-align: center;
+  margin-top: 12px;
 }
-
-.link a{
-  text-decoration:none;
-  font-size:14px;
-  color:#111827;
+.link a {
+  text-decoration: none;
+  color: #111827;
 }
 
 /* ===== DASHBOARD GRID ===== */
-.dashboard-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  margin-top:20px;
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
 }
 
-.glass-box{
-  padding:20px;
-  border-radius:20px;
-  background:var(--glass-bg);
-  backdrop-filter: blur(16px);
-  border:1px solid var(--glass-border);
-  text-align:center;
-  font-weight:600;
+.glass-box {
+  padding: clamp(14px, 4vw, 20px);
+  border-radius: 18px;
+  text-align: center;
+
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* ===== MOBILE EXTRA FIX ===== */
+@media (max-width: 480px) {
+  .glass-card {
+    max-width: 100%;
+  }
 }
