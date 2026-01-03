@@ -1,4 +1,4 @@
-const API="https://moti2.onrender.com/api";
+const API = "https://moti2.onrender.com/api";
 const uid=localStorage.getItem("userId");
 
 /* ===== TOAST ===== */
