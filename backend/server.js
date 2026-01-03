@@ -29,64 +29,109 @@ CREATE TABLE IF NOT EXISTS notes (
 )
 `);
 
-/* ===== REGISTER ===== */
-app.post("/api/register", async (req, res) => {
-  const { username, password } = req.body;
-  const hash = await bcrypt.hash(password, 10);
+/* ================= HABITS ================= */
+db.run(`
+CREATE TABLE IF NOT EXISTS habits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  name TEXT,
+  done INTEGER
+)
+`);
 
+/* ================= REMINDERS ================= */
+db.run(`
+CREATE TABLE IF NOT EXISTS reminders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  text TEXT,
+  remind_at TEXT
+)
+`);
+
+/* ================= AUTH ================= */
+app.post("/api/register", async (req, res) => {
+  const hash = await bcrypt.hash(req.body.password, 10);
   db.run(
     "INSERT INTO users(username,password) VALUES(?,?)",
-    [username, hash],
-    err => {
-      if (err) return res.status(400).json({ error: "User exists" });
-      res.json({ success: true });
-    }
+    [req.body.username, hash],
+    err => err ? res.json({ error: "User exists" }) : res.json({ success: true })
   );
 });
 
-/* ===== LOGIN ===== */
 app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-
   db.get(
     "SELECT * FROM users WHERE username=?",
-    [username],
+    [req.body.username],
     async (_, user) => {
-      if (!user) return res.status(401).json({ error: "Invalid credentials" });
-
-      const ok = await bcrypt.compare(password, user.password);
-      if (!ok) return res.status(401).json({ error: "Invalid credentials" });
-
-      res.json({ userId: user.id, username: user.username });
+      if (!user) return res.json({ error: "Invalid credentials" });
+      const ok = await bcrypt.compare(req.body.password, user.password);
+      ok ? res.json({ userId: user.id, username: user.username }) :
+           res.json({ error: "Invalid credentials" });
     }
   );
 });
 
-/* ===== NOTES API ===== */
+/* ================= NOTES API ================= */
 app.post("/api/notes", (req, res) => {
-  const { userId, content } = req.body;
-
   db.run(
     "INSERT INTO notes(user_id,content,created_at) VALUES(?,?,datetime('now'))",
-    [userId, content],
+    [req.body.userId, req.body.content],
     () => res.json({ success: true })
   );
 });
-
-app.get("/api/notes/:userId", (req, res) => {
-  db.all(
-    "SELECT * FROM notes WHERE user_id=? ORDER BY id DESC",
-    [req.params.userId],
-    (_, rows) => res.json(rows)
-  );
+app.get("/api/notes/:uid", (req, res) => {
+  db.all("SELECT * FROM notes WHERE user_id=?", [req.params.uid],
+    (_, rows) => res.json(rows));
 });
-
 app.delete("/api/notes/:id", (req, res) => {
-  db.run("DELETE FROM notes WHERE id=?", [req.params.id], () =>
-    res.json({ success: true })
+  db.run("DELETE FROM notes WHERE id=?", [req.params.id],
+    () => res.json({ success: true }));
+});
+
+/* ================= HABITS API ================= */
+app.post("/api/habits", (req,res)=>{
+  db.run(
+    "INSERT INTO habits(user_id,name,done) VALUES(?,?,0)",
+    [req.body.userId, req.body.name],
+    ()=>res.json({success:true})
+  );
+});
+app.get("/api/habits/:uid",(req,res)=>{
+  db.all("SELECT * FROM habits WHERE user_id=?", [req.params.uid],
+    (_,rows)=>res.json(rows));
+});
+app.post("/api/habits/toggle/:id",(req,res)=>{
+  db.run(
+    "UPDATE habits SET done=1-done WHERE id=?",
+    [req.params.id],
+    ()=>res.json({success:true})
   );
 });
 
-app.listen(PORT, () =>
-  console.log("MOTI backend running on port", PORT)
-);
+/* ================= REMINDERS API ================= */
+app.post("/api/reminders",(req,res)=>{
+  db.run(
+    "INSERT INTO reminders(user_id,text,remind_at) VALUES(?,?,?)",
+    [req.body.userId, req.body.text, req.body.time],
+    ()=>res.json({success:true})
+  );
+});
+app.get("/api/reminders/:uid",(req,res)=>{
+  db.all("SELECT * FROM reminders WHERE user_id=?", [req.params.uid],
+    (_,rows)=>res.json(rows));
+});
+
+/* ================= ANALYTICS ================= */
+app.get("/api/stats/:uid",(req,res)=>{
+  db.get(
+    `SELECT
+      (SELECT COUNT(*) FROM notes WHERE user_id=?) as notes,
+      (SELECT COUNT(*) FROM habits WHERE user_id=?) as habits,
+      (SELECT COUNT(*) FROM reminders WHERE user_id=?) as reminders`,
+    [req.params.uid, req.params.uid, req.params.uid],
+    (_,row)=>res.json(row)
+  );
+});
+
+app.listen(PORT, ()=>console.log("MOTI backend running", PORT));
