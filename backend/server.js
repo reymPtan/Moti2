@@ -8,113 +8,102 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
-const db = new sqlite3.Database("./moti.db");
 
-/* ======================
-   DATABASE
-====================== */
+// IMPORTANT: Render Disk path
+const db = new sqlite3.Database("/data/moti.db");
+
 db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users (
+  db.run(`CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     password TEXT
   )`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS notes (
+  db.run(`CREATE TABLE IF NOT EXISTS notes(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
-    content TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    content TEXT
   )`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS habits (
+  db.run(`CREATE TABLE IF NOT EXISTS habits(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
-    title TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    name TEXT,
+    done INTEGER DEFAULT 0
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS motivation(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    text TEXT
   )`);
 });
 
-/* ======================
-   AUTH
-====================== */
-app.post("/api/register", async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password)
-    return res.status(400).json({ error: "Missing fields" });
-
-  const hash = await bcrypt.hash(password, 10);
+/* AUTH */
+app.post("/api/register", async (req,res)=>{
+  const {username,password} = req.body;
+  const hash = await bcrypt.hash(password,10);
   db.run(
     "INSERT INTO users(username,password) VALUES(?,?)",
-    [username, hash],
-    err =>
-      err
-        ? res.status(400).json({ error: "User exists" })
-        : res.json({ success: true })
+    [username,hash],
+    err => err
+      ? res.status(400).json({error:"User exists"})
+      : res.json({success:true})
   );
 });
 
-app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
+app.post("/api/login",(req,res)=>{
+  const {username,password} = req.body;
   db.get(
     "SELECT * FROM users WHERE username=?",
     [username],
-    async (_, user) => {
-      if (!user) return res.status(401).json({ error: "Invalid login" });
-      const ok = await bcrypt.compare(password, user.password);
+    async (_,user)=>{
+      if(!user) return res.status(401).json({error:"Invalid"});
+      const ok = await bcrypt.compare(password,user.password);
       ok
-        ? res.json({ userId: user.id, username: user.username })
-        : res.status(401).json({ error: "Invalid login" });
+        ? res.json({userId:user.id,username:user.username})
+        : res.status(401).json({error:"Invalid"});
     }
   );
 });
 
-/* ======================
-   NOTES
-====================== */
-app.post("/api/notes", (req, res) => {
-  const { userId, content } = req.body;
-  if (!userId || !content)
-    return res.status(400).json({ error: "Missing data" });
-
-  db.run(
-    "INSERT INTO notes(user_id,content) VALUES(?,?)",
-    [userId, content],
-    () => res.json({ success: true })
+/* NOTES */
+app.get("/api/notes/:uid",(req,res)=>{
+  db.all("SELECT * FROM notes WHERE user_id=?",[req.params.uid],
+    (_,rows)=>res.json(rows)
   );
 });
 
-app.get("/api/notes/:userId", (req, res) => {
-  db.all(
-    "SELECT * FROM notes WHERE user_id=? ORDER BY created_at DESC",
-    [req.params.userId],
-    (_, rows) => res.json(rows)
+app.post("/api/notes",(req,res)=>{
+  const {userId,content} = req.body;
+  db.run("INSERT INTO notes(user_id,content) VALUES(?,?)",
+    [userId,content],
+    ()=>res.json({success:true})
   );
 });
 
-/* ======================
-   HABITS
-====================== */
-app.post("/api/habits", (req, res) => {
-  const { userId, title } = req.body;
-  if (!userId || !title)
-    return res.status(400).json({ error: "Missing data" });
-
-  db.run(
-    "INSERT INTO habits(user_id,title) VALUES(?,?)",
-    [userId, title],
-    () => res.json({ success: true })
+/* HABITS */
+app.get("/api/habits/:uid",(req,res)=>{
+  db.all("SELECT * FROM habits WHERE user_id=?",[req.params.uid],
+    (_,rows)=>res.json(rows)
   );
 });
 
-app.get("/api/habits/:userId", (req, res) => {
-  db.all(
-    "SELECT * FROM habits WHERE user_id=?",
-    [req.params.userId],
-    (_, rows) => res.json(rows)
+app.post("/api/habits",(req,res)=>{
+  const {userId,name} = req.body;
+  db.run("INSERT INTO habits(user_id,name) VALUES(?,?)",
+    [userId,name],
+    ()=>res.json({success:true})
   );
 });
 
-app.listen(PORT, () =>
-  console.log("✅ MOTI backend running on", PORT)
-);
+/* MOTIVATION */
+app.get("/api/motivation/:uid",(req,res)=>{
+  db.get(
+    "SELECT text FROM motivation WHERE user_id=? ORDER BY id DESC LIMIT 1",
+    [req.params.uid],
+    (_,row)=>res.json(row || {text:"You can do this 💪"})
+  );
+});
+
+app.listen(PORT,()=>console.log("MOTI backend running"));
