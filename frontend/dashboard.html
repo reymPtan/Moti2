@@ -1,18 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOTI Dashboard</title>
+</head>
+<body>
+
+<h2>MOTI Dashboard</h2>
+
 <h3>Notes</h3>
 <input id="noteInput">
-<button onclick="addNote()">Add</button>
+<button onclick="addNote()">Add Note</button>
 <ul id="notesList"></ul>
 
 <h3>Habits</h3>
 <input id="habitInput">
-<button onclick="addHabit()">Add</button>
+<button onclick="addHabit()">Add Habit</button>
 <ul id="habitsList"></ul>
-
-<h3>Reminders</h3>
-<input id="reminderText" placeholder="Reminder">
-<input type="datetime-local" id="reminderTime">
-<button onclick="addReminder()">Add</button>
-<ul id="remindersList"></ul>
 
 <h3>Analytics</h3>
 <div id="analytics"></div>
+
+<button onclick="localStorage.clear();location.href='index.html'">
+  Logout
+</button>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
