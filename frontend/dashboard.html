@@ -1,18 +1,24 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MOTI Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>MOTI | Dashboard</title>
+  <link rel="stylesheet" href="css/glass.css">
 </head>
-<body class="bg">
-<div class="glass wide">
-  <div class="top">
-    <h2 id="welcome"></h2>
-    <button onclick="logout()">Logout</button>
-  </div>
-  <p>Welcome to MOTI – your productivity companion.</p>
+<body>
+
+<div class="glass">
+  <h2>Welcome to MOTI</h2>
+  <p id="welcome"></p>
+
+  <button onclick="logout()">Logout</button>
 </div>
-<script src="js/dashboard.js"></script>
+
+<script src="js/auth.js"></script>
+<script>
+  requireLogin(); // 🔐 PROTECT PAGE
+
+  document.getElementById("welcome").innerText =
+    "Hello, " + localStorage.getItem("username");
+</script>
 </body>
 </html>
