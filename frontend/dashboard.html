@@ -1,29 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MOTI Dashboard</title>
+
+  <!-- GLASS STYLE -->
+  <link rel="stylesheet" href="css/glass.css">
 </head>
 <body>
 
-<h2>MOTI Dashboard</h2>
+<!-- BACKGROUND WRAPPER -->
+<div class="page">
 
-<h3>Notes</h3>
-<input id="noteInput">
-<button onclick="addNote()">Add Note</button>
-<ul id="notesList"></ul>
+  <!-- LOGO -->
+  <img src="images/logo.png" class="logo" alt="MOTI Logo">
 
-<h3>Habits</h3>
-<input id="habitInput">
-<button onclick="addHabit()">Add Habit</button>
-<ul id="habitsList"></ul>
+  <!-- GLASS CONTAINER -->
+  <div class="glass">
 
-<h3>Analytics</h3>
-<div id="analytics"></div>
+    <h2>MOTI Dashboard</h2>
 
-<button onclick="localStorage.clear();location.href='index.html'">
-  Logout
-</button>
+    <!-- ===== NOTES ===== -->
+    <h3>📝 Notes</h3>
+    <input id="noteInput" placeholder="Write a note...">
+    <button onclick="addNote()">Add Note</button>
+    <ul id="notesList"></ul>
+
+    <hr>
+
+    <!-- ===== HABITS ===== -->
+    <h3>🔥 Habits</h3>
+    <input id="habitInput" placeholder="New habit...">
+    <button onclick="addHabit()">Add Habit</button>
+    <ul id="habitsList"></ul>
+
+    <hr>
+
+    <!-- ===== REMINDERS ===== -->
+    <h3>⏰ Reminders</h3>
+    <input id="reminderText" placeholder="Reminder text">
+    <input type="datetime-local" id="reminderTime">
+    <button onclick="addReminder()">Add Reminder</button>
+    <ul id="remindersList"></ul>
+
+    <hr>
+
+    <!-- ===== ANALYTICS ===== -->
+    <h3>📊 Analytics</h3>
+    <div id="analytics"></div>
+
+    <hr>
+
+    <!-- LOGOUT -->
+    <button class="logout"
+      onclick="localStorage.clear();location.href='index.html'">
+      Logout
+    </button>
+
+  </div>
+</div>
 
 <script src="js/dashboard.js"></script>
 </body>
