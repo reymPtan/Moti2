@@ -115,6 +115,13 @@ button {
   backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.3);
 }
+.logo-small {
+  width: 6rem;      /* 6x6 size */
+  height: 6rem;
+  display: block;
+  margin: 0 auto 16px auto; /* center horizontally */
+}
+
 
 /* ===== MOBILE EXTRA FIX ===== */
 @media (max-width: 480px) {
