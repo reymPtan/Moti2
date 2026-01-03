@@ -121,7 +121,27 @@ width: min(120px, 30vw);
   margin-bottom: 20px;   /* center horizontally */
 }
 
+.logo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* horizontal center */
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
 
+.logo {
+  width: 90px;          /* adjust if needed */
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+}
 /* ===== MOBILE EXTRA FIX ===== */
 @media (max-width: 480px) {
   .glass-card {
