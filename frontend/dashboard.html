@@ -1,17 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="css/moti-glass-theme.css">
+</head>
+<body class="page-dashboard">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<div class="glass">
-  <h2 id="motivation"></h2>
+<script src="js/auth.js"></script>
+<script>requireLogin()</script>
 
-  <h3>Notes</h3>
-  <input id="newNote"><button id="addNote">Add</button>
-  <ul id="notesList"></ul>
+<div class="page-wrapper">
+<img src="images/logo.png" class="logo-big">
 
-  <h3>Habits</h3>
-  <input id="newHabit"><button id="addHabit">Add</button>
-  <ul id="habitList"></ul>
+<div class="glass-card">
 
-  <button onclick="localStorage.clear();location.href='index.html'">
-    Logout
-  </button>
+<h2 id="welcome"></h2>
+
+<!-- NOTES -->
+<h3>📓 Notes</h3>
+<input id="noteInput" placeholder="New note">
+<button onclick="addNote()">Add</button>
+<ul id="notesList"></ul>
+
+<!-- HABITS -->
+<h3>🔥 Habits</h3>
+<input id="habitInput" placeholder="New habit">
+<button onclick="addHabit()">Add</button>
+<ul id="habitsList"></ul>
+
+<!-- REMINDERS -->
+<h3>⏰ Reminders</h3>
+<input id="reminderText" placeholder="Reminder">
+<input type="datetime-local" id="reminderTime">
+<button onclick="addReminder()">Add</button>
+<ul id="remindersList"></ul>
+
+<!-- ANALYTICS -->
+<h3>📊 Analytics</h3>
+<p id="stats"></p>
+
+<button onclick="logout()">Logout</button>
+
 </div>
+</div>
+
 <script src="js/dashboard.js"></script>
+<script>
+welcome.innerText = "Welcome, " + localStorage.getItem("username");
+</script>
+
+</body>
+</html>
