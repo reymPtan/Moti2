@@ -1,65 +1,52 @@
 const API_URL = "https://moti2.onrender.com/api";
 
-/* ======================
-   REGISTER
-====================== */
+/* REGISTER */
 function register() {
-  const username = document.getElementById("regUsername").value;
-  const password = document.getElementById("regPassword").value;
-
   fetch(`${API_URL}/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({
+      username: regUsername.value,
+      password: regPassword.value
+    })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.error) {
-      alert(data.error);
-    } else {
-      alert("Registered successfully!");
-      window.location.href = "index.html";
-    }
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) alert(d.error);
+    else location.href = "index.html";
   });
 }
 
-/* ======================
-   LOGIN
-====================== */
+/* LOGIN */
 function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
   fetch(`${API_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify({
+      username: username.value,
+      password: password.value
+    })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.error) {
-      alert(data.error);
-    } else {
-      localStorage.setItem("userId", data.userId);
-      localStorage.setItem("username", data.username);
-      window.location.href = "dashboard.html";
+  .then(r => r.json())
+  .then(d => {
+    if (d.error) alert(d.error);
+    else {
+      localStorage.setItem("userId", d.userId);
+      localStorage.setItem("username", d.username);
+      location.href = "dashboard.html";
     }
   });
 }
 
-/* ======================
-   SESSION GUARD
-====================== */
+/* SESSION */
 function requireLogin() {
   if (!localStorage.getItem("userId")) {
-    window.location.href = "index.html";
+    location.href = "index.html";
   }
 }
 
-/* ======================
-   LOGOUT
-====================== */
+/* LOGOUT */
 function logout() {
   localStorage.clear();
-  window.location.href = "index.html";
+  location.href = "index.html";
 }
