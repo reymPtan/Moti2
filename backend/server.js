@@ -8,102 +8,130 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
+const db = new sqlite3.Database("./moti.db");
 
-// IMPORTANT: Render Disk path
-const db = new sqlite3.Database("/data/moti.db");
+/* ================= USERS ================= */
+db.run(`
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE,
+  password TEXT
+)
+`);
 
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS users(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE,
-    password TEXT
-  )`);
+/* ================= NOTES ================= */
+db.run(`
+CREATE TABLE IF NOT EXISTS notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  content TEXT,
+  created_at TEXT
+)
+`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS notes(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    content TEXT
-  )`);
+/* ================= HABITS ================= */
+db.run(`
+CREATE TABLE IF NOT EXISTS habits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  name TEXT,
+  done INTEGER
+)
+`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS habits(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    name TEXT,
-    done INTEGER DEFAULT 0
-  )`);
+/* ================= REMINDERS ================= */
+db.run(`
+CREATE TABLE IF NOT EXISTS reminders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  text TEXT,
+  remind_at TEXT
+)
+`);
 
-  db.run(`CREATE TABLE IF NOT EXISTS motivation(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
-    text TEXT
-  )`);
-});
-
-/* AUTH */
-app.post("/api/register", async (req,res)=>{
-  const {username,password} = req.body;
-  const hash = await bcrypt.hash(password,10);
+/* ================= AUTH ================= */
+app.post("/api/register", async (req, res) => {
+  const hash = await bcrypt.hash(req.body.password, 10);
   db.run(
     "INSERT INTO users(username,password) VALUES(?,?)",
-    [username,hash],
-    err => err
-      ? res.status(400).json({error:"User exists"})
-      : res.json({success:true})
+    [req.body.username, hash],
+    err => err ? res.json({ error: "User exists" }) : res.json({ success: true })
   );
 });
 
-app.post("/api/login",(req,res)=>{
-  const {username,password} = req.body;
+app.post("/api/login", (req, res) => {
   db.get(
     "SELECT * FROM users WHERE username=?",
-    [username],
-    async (_,user)=>{
-      if(!user) return res.status(401).json({error:"Invalid"});
-      const ok = await bcrypt.compare(password,user.password);
-      ok
-        ? res.json({userId:user.id,username:user.username})
-        : res.status(401).json({error:"Invalid"});
+    [req.body.username],
+    async (_, user) => {
+      if (!user) return res.json({ error: "Invalid credentials" });
+      const ok = await bcrypt.compare(req.body.password, user.password);
+      ok ? res.json({ userId: user.id, username: user.username }) :
+           res.json({ error: "Invalid credentials" });
     }
   );
 });
 
-/* NOTES */
-app.get("/api/notes/:uid",(req,res)=>{
-  db.all("SELECT * FROM notes WHERE user_id=?",[req.params.uid],
-    (_,rows)=>res.json(rows)
+/* ================= NOTES API ================= */
+app.post("/api/notes", (req, res) => {
+  db.run(
+    "INSERT INTO notes(user_id,content,created_at) VALUES(?,?,datetime('now'))",
+    [req.body.userId, req.body.content],
+    () => res.json({ success: true })
   );
 });
+app.get("/api/notes/:uid", (req, res) => {
+  db.all("SELECT * FROM notes WHERE user_id=?", [req.params.uid],
+    (_, rows) => res.json(rows));
+});
+app.delete("/api/notes/:id", (req, res) => {
+  db.run("DELETE FROM notes WHERE id=?", [req.params.id],
+    () => res.json({ success: true }));
+});
 
-app.post("/api/notes",(req,res)=>{
-  const {userId,content} = req.body;
-  db.run("INSERT INTO notes(user_id,content) VALUES(?,?)",
-    [userId,content],
+/* ================= HABITS API ================= */
+app.post("/api/habits", (req,res)=>{
+  db.run(
+    "INSERT INTO habits(user_id,name,done) VALUES(?,?,0)",
+    [req.body.userId, req.body.name],
     ()=>res.json({success:true})
   );
 });
-
-/* HABITS */
 app.get("/api/habits/:uid",(req,res)=>{
-  db.all("SELECT * FROM habits WHERE user_id=?",[req.params.uid],
-    (_,rows)=>res.json(rows)
-  );
+  db.all("SELECT * FROM habits WHERE user_id=?", [req.params.uid],
+    (_,rows)=>res.json(rows));
 });
-
-app.post("/api/habits",(req,res)=>{
-  const {userId,name} = req.body;
-  db.run("INSERT INTO habits(user_id,name) VALUES(?,?)",
-    [userId,name],
+app.post("/api/habits/toggle/:id",(req,res)=>{
+  db.run(
+    "UPDATE habits SET done=1-done WHERE id=?",
+    [req.params.id],
     ()=>res.json({success:true})
   );
 });
 
-/* MOTIVATION */
-app.get("/api/motivation/:uid",(req,res)=>{
+/* ================= REMINDERS API ================= */
+app.post("/api/reminders",(req,res)=>{
+  db.run(
+    "INSERT INTO reminders(user_id,text,remind_at) VALUES(?,?,?)",
+    [req.body.userId, req.body.text, req.body.time],
+    ()=>res.json({success:true})
+  );
+});
+app.get("/api/reminders/:uid",(req,res)=>{
+  db.all("SELECT * FROM reminders WHERE user_id=?", [req.params.uid],
+    (_,rows)=>res.json(rows));
+});
+
+/* ================= ANALYTICS ================= */
+app.get("/api/stats/:uid",(req,res)=>{
   db.get(
-    "SELECT text FROM motivation WHERE user_id=? ORDER BY id DESC LIMIT 1",
-    [req.params.uid],
-    (_,row)=>res.json(row || {text:"You can do this 💪"})
+    `SELECT
+      (SELECT COUNT(*) FROM notes WHERE user_id=?) as notes,
+      (SELECT COUNT(*) FROM habits WHERE user_id=?) as habits,
+      (SELECT COUNT(*) FROM reminders WHERE user_id=?) as reminders`,
+    [req.params.uid, req.params.uid, req.params.uid],
+    (_,row)=>res.json(row)
   );
 });
 
-app.listen(PORT,()=>console.log("MOTI backend running"));
+app.listen(PORT, ()=>console.log("MOTI backend running", PORT));
