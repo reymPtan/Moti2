@@ -1,39 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="css/moti-glass-theme.css">
+<title>MOTI | Dashboard</title>
 </head>
+
 <body class="page-dashboard">
 
 <script src="js/auth.js"></script>
-<script>requireLogin()</script>
+<script>requireLogin();</script>
 
 <div class="page-wrapper">
-<img src="images/logo.png" class="logo-big">
+  <img src="images/logo.png" class="logo-big">
 
-<div class="glass-card">
-<p id="motivation"></p>
+  <div class="glass-card">
+    <p id="motivation"></p>
 
-<h3>📓 Notes</h3>
-<input id="noteInput"><button onclick="addNote()">Add</button>
-<ul id="notesList"></ul>
+    <h3>📓 Notes</h3>
+    <input id="noteInput">
+    <button onclick="addNote()">Add</button>
+    <ul id="notesList"></ul>
 
-<h3>🔥 Habits</h3>
-<input id="habitInput"><button onclick="addHabit()">Add</button>
-<ul id="habitsList"></ul>
+    <h3>🔥 Habits</h3>
+    <input id="habitInput">
+    <button onclick="addHabit()">Add</button>
+    <ul id="habitsList"></ul>
 
-<h3>⏰ Reminders</h3>
-<input id="reminderText">
-<input type="datetime-local" id="reminderTime">
-<button onclick="addReminder()">Add</button>
-<ul id="remindersList"></ul>
+    <h3>⏰ Reminders</h3>
+    <input id="reminderText">
+    <input type="datetime-local" id="reminderTime">
+    <button onclick="addReminder()">Add</button>
+    <ul id="remindersList"></ul>
 
-<h3>📊 Analytics</h3>
-<p id="stats"></p>
+    <h3>📊 Analytics</h3>
+    <p id="stats"></p>
 
-<button onclick="logout()">Logout</button>
-</div>
+    <button onclick="logout()">Logout</button>
+  </div>
 </div>
 
 <script src="js/dashboard.js"></script>
